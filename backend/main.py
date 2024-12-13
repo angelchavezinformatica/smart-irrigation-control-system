@@ -1,15 +1,22 @@
 import random
 import time
+import os
 
 from fastapi import FastAPI, WebSocket
+from fastapi.responses import FileResponse
 import starlette
 
 app = FastAPI()
 
 
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
+async def serve_index():
+    return FileResponse(os.path.join('static', 'index.html'))
+
+
+@app.get("/{file_path:path}")
+async def serve_files(file_path: str):
+    return FileResponse(os.path.join('static', *file_path.split('/')))
 
 
 @app.websocket('/ws')

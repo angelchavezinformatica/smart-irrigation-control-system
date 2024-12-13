@@ -25,6 +25,20 @@
    cd smart-irrigation-control-system
    ```
 
+1. **Instala las dependencias**:
+
+- **Backend**: Muevete a la carpeta `backend`, y ejecuta el siguiente comando:
+
+  ```bash
+  pip install -r requirements.txt
+  ```
+
+- **Frontend**: Muevete a la carpeta `frontend`, y ejecuta el siguiente comando:
+
+  ```bash
+  npm install
+  ```
+
 1. **Ejecuta la aplicación**:
 
    - Ejecuta el archivo `build.py` para crear el build de la aplicación.
