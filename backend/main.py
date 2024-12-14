@@ -34,11 +34,11 @@ async def websocket_endpoint(socket: WebSocket):
             data = INO.read_as_json()
 
             await WS.broadcast({
-                "temperature": round(data.get('temperatura') / 100, 2),
+                "temperature": data.get('temperatura'),
                 "humidity": data.get('humedad'),
                 "irrigation_time": irrigation_time,
             })
 
-            await asyncio.sleep(2)
+            await asyncio.sleep(1)
     except WebSocketDisconnect:
         await WS.disconnect(socket)
