@@ -52,8 +52,8 @@ export function useApp() {
     };
 
     return () => {
-      ws.close()
-    }
+      ws.close();
+    };
   }, []);
 
   return { data, status };

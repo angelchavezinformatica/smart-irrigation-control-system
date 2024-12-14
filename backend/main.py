@@ -5,10 +5,12 @@ import os
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 
+from services.connection_ino import ArduinoConnection
 from services.connection_ws import ConnectionWS
 
 app = FastAPI()
 WS = ConnectionWS()
+INO = ArduinoConnection()
 
 
 @app.get("/")
@@ -27,13 +29,13 @@ async def websocket_endpoint(socket: WebSocket):
 
     try:
         while True:
-            temperature = random.randint(1, 50)
-            humidity = random.randint(1, 100)
             irrigation_time = random.randint(1, 9999)
 
+            data = INO.read_as_json()
+
             await WS.broadcast({
-                "temperature": temperature,
-                "humidity": humidity,
+                "temperature": round(data.get('temperatura') / 100, 2),
+                "humidity": data.get('humedad'),
                 "irrigation_time": irrigation_time,
             })
 
