@@ -1,12 +1,14 @@
+import asyncio
 import random
-import time
 import os
 
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
-import starlette
+
+from services.connection_ws import ConnectionWS
 
 app = FastAPI()
+WS = ConnectionWS()
 
 
 @app.get("/")
@@ -20,21 +22,21 @@ async def serve_files(file_path: str):
 
 
 @app.websocket('/ws')
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
+async def websocket_endpoint(socket: WebSocket):
+    await WS.connect(socket)
 
-    while True:
-        temperature = random.randint(1, 50)
-        humidity = random.randint(1, 100)
-        irrigation_time = random.randint(1, 9999)
+    try:
+        while True:
+            temperature = random.randint(1, 50)
+            humidity = random.randint(1, 100)
+            irrigation_time = random.randint(1, 9999)
 
-        try:
-            await websocket.send_json({
+            await WS.broadcast({
                 "temperature": temperature,
                 "humidity": humidity,
                 "irrigation_time": irrigation_time,
             })
-        except starlette.websockets.WebSocketDisconnect:
-            break
 
-        time.sleep(1)
+            await asyncio.sleep(2)
+    except WebSocketDisconnect:
+        await WS.disconnect(socket)

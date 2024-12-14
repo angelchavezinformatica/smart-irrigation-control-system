@@ -50,6 +50,10 @@ export function useApp() {
       });
       setStatus("ACTIVO");
     };
+
+    return () => {
+      ws.close()
+    }
   }, []);
 
   return { data, status };
